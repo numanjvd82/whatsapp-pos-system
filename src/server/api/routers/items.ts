@@ -1,77 +1,122 @@
-import { z } from 'zod';
-import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
+// import { z } from 'zod';
+// import { TRPCError } from '@trpc/server';
+// import { createTRPCRouter, publicProcedure } from '@/server/api/trpc';
 
-// Sample data for demonstration
-const items = [
-  { id: '1', name: 'Coffee', price: 5.99, category: 'beverages' },
-  { id: '2', name: 'Sandwich', price: 8.99, category: 'food' },
-  { id: '3', name: 'Tea', price: 3.99, category: 'beverages' },
-];
+// // Zod schemas for validation
+// const ItemCategorySchema = z.enum(['FOOD', 'BEVERAGES', 'DESSERTS']);
 
-export const itemsRouter = createTRPCRouter({
-  getAll: publicProcedure.query(() => {
-    return items;
-  }),
+// export const itemsRouter = createTRPCRouter({
+//   getAll: publicProcedure.query(async ({ ctx }) => {
+//     const items = await ctx.prisma.item.findMany({
+//       orderBy: { createdAt: 'desc' },
+//     });
+//     return items;
+//   }),
 
-  getById: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(({ input }) => {
-      const item = items.find((item) => item.id === input.id);
-      if (!item) {
-        throw new Error('Item not found');
-      }
-      return item;
-    }),
+//   getById: publicProcedure
+//     .input(z.object({ id: z.string() }))
+//     .query(async ({ input, ctx }) => {
+//       const item = await ctx.prisma.item.findUnique({
+//         where: { id: input.id },
+//       });
 
-  create: publicProcedure
-    .input(
-      z.object({
-        name: z.string().min(1, 'Name is required'),
-        price: z.number().positive('Price must be positive'),
-        category: z.enum(['food', 'beverages', 'desserts']),
-      }),
-    )
-    .mutation(({ input }) => {
-      const newItem = {
-        id: (items.length + 1).toString(),
-        ...input,
-      };
-      items.push(newItem);
-      return newItem;
-    }),
+//       if (!item) {
+//         throw new TRPCError({
+//           code: 'NOT_FOUND',
+//           message: 'Item not found',
+//         });
+//       }
 
-  update: publicProcedure
-    .input(
-      z.object({
-        id: z.string(),
-        name: z.string().min(1, 'Name is required').optional(),
-        price: z.number().positive('Price must be positive').optional(),
-        category: z.enum(['food', 'beverages', 'desserts']).optional(),
-      }),
-    )
-    .mutation(({ input }) => {
-      const itemIndex = items.findIndex((item) => item.id === input.id);
-      if (itemIndex === -1) {
-        throw new Error('Item not found');
-      }
+//       return item;
+//     }),
 
-      const updatedItem = {
-        ...items[itemIndex],
-        ...input,
-      };
-      items[itemIndex] = updatedItem;
-      return updatedItem;
-    }),
+//   create: publicProcedure
+//     .input(
+//       z.object({
+//         name: z.string().min(1, 'Name is required'),
+//         price: z.number().positive('Price must be positive'),
+//         category: ItemCategorySchema,
+//         description: z.string().optional(),
+//         imageUrl: z.string().url().optional(),
+//       }),
+//     )
+//     .mutation(async ({ input, ctx }) => {
+//       const item = await ctx.prisma.item.create({
+//         data: {
+//           name: input.name,
+//           price: input.price,
+//           category: input.category,
+//           description: input.description,
+//           imageUrl: input.imageUrl,
+//         },
+//       });
+//       return item;
+//     }),
 
-  delete: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(({ input }) => {
-      const itemIndex = items.findIndex((item) => item.id === input.id);
-      if (itemIndex === -1) {
-        throw new Error('Item not found');
-      }
+//   update: publicProcedure
+//     .input(
+//       z.object({
+//         id: z.string(),
+//         name: z.string().min(1, 'Name is required').optional(),
+//         price: z.number().positive('Price must be positive').optional(),
+//         category: ItemCategorySchema.optional(),
+//         description: z.string().optional(),
+//         imageUrl: z.string().url().optional(),
+//         inStock: z.boolean().optional(),
+//       }),
+//     )
+//     .mutation(async ({ input, ctx }) => {
+//       const { id, ...updateData } = input;
 
-      const deletedItem = items.splice(itemIndex, 1)[0];
-      return deletedItem;
-    }),
-});
+//       try {
+//         const item = await ctx.prisma.item.update({
+//           where: { id },
+//           data: updateData,
+//         });
+//         return item;
+//       } catch {
+//         throw new TRPCError({
+//           code: 'NOT_FOUND',
+//           message: 'Item not found',
+//         });
+//       }
+//     }),
+
+//   delete: publicProcedure
+//     .input(z.object({ id: z.string() }))
+//     .mutation(async ({ input, ctx }) => {
+//       try {
+//         const item = await ctx.prisma.item.delete({
+//           where: { id: input.id },
+//         });
+//         return item;
+//       } catch {
+//         throw new TRPCError({
+//           code: 'NOT_FOUND',
+//           message: 'Item not found',
+//         });
+//       }
+//     }),
+
+//   toggleStock: publicProcedure
+//     .input(z.object({ id: z.string() }))
+//     .mutation(async ({ input, ctx }) => {
+//       const item = await ctx.prisma.item.findUnique({
+//         where: { id: input.id },
+//       });
+
+//       if (!item) {
+//         throw new TRPCError({
+//           code: 'NOT_FOUND',
+//           message: 'Item not found',
+//         });
+//       }
+
+//       const updatedItem = await ctx.prisma.item.update({
+//         where: { id: input.id },
+//         data: { inStock: !item.inStock },
+//       });
+
+//       return updatedItem;
+//     }),
+// });

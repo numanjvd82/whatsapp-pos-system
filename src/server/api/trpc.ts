@@ -3,6 +3,8 @@ import { type FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
+import { prisma } from '@/lib/prisma';
+
 /**
  * 1. CONTEXT
  *
@@ -19,6 +21,7 @@ export const createTRPCContext = async (opts: FetchCreateContextFnOptions) => {
 
   return {
     req,
+    prisma,
     // session,
   };
 };
