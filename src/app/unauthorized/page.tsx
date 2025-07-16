@@ -1,0 +1,44 @@
+import Link from 'next/link';
+import { Shield, LogIn, Home } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+export default function UnauthorizedPage() {
+  return (
+    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
+      <Card className='w-full max-w-md text-center'>
+        <CardHeader>
+          <div className='flex justify-center mb-4'>
+            <div className='bg-yellow-500 p-3 rounded-full'>
+              <Shield className='h-8 w-8 text-white' />
+            </div>
+          </div>
+          <CardTitle className='text-2xl font-bold text-gray-800'>
+            Access Denied
+          </CardTitle>
+          <p className='text-gray-600 mt-2'>
+            You don&apos;t have permission to access this page. Please log in
+            with an authorized account.
+          </p>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <div className='text-6xl font-bold text-gray-300'>403</div>
+          <div className='space-y-2'>
+            <Link href='/login' className='block'>
+              <Button className='w-full bg-green-500 hover:bg-green-600'>
+                <LogIn className='h-4 w-4 mr-2' />
+                Sign In
+              </Button>
+            </Link>
+            <Link href='/' className='block'>
+              <Button variant='outline' className='w-full'>
+                <Home className='h-4 w-4 mr-2' />
+                Go Home
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
