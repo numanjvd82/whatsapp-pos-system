@@ -24,7 +24,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { api } from '@/utils/api';
-import { signUpSchema } from '@/server/api/schemas/auth.schema';
+import { signUpSchema } from '@/schemas/auth.schema';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 

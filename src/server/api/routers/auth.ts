@@ -1,6 +1,6 @@
 import { handleError } from '../errors';
 import { authModel } from '../models/auth';
-import { signUpSchema } from '../schemas/auth.schema';
+import { signUpSchema } from '../../../schemas/auth.schema';
 import { createTRPCRouter, publicProcedure } from '../trpc';
 
 export const authRouter = createTRPCRouter({

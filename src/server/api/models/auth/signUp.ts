@@ -1,5 +1,5 @@
 import z from 'zod';
-import { signUpSchema } from '../../schemas/auth.schema';
+import { signUpSchema } from '../../../../schemas/auth.schema';
 import { prisma } from '@/lib/prisma';
 import { ConflictError } from '@/server/api/errors';
 import { hash } from 'bcrypt';
