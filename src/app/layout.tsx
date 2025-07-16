@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Open_Sans, Roboto } from 'next/font/google';
 import './globals.css';
 import { TRPCProvider } from '@/components/providers/trpc-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${roboto.variable} ${openSans.variable} antialiased`}>
         <TRPCProvider>{children}</TRPCProvider>
+        <Toaster />
       </body>
     </html>
   );

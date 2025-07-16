@@ -1,90 +1,39 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import Link from 'next/link';
+import { MessageCircle, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className='min-h-screen p-8'>
-      <div className='max-w-4xl mx-auto'>
-        <h1 className='text-4xl font-bold text-center mb-8'>
-          WhatsApp POS System
-        </h1>
-
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          <Card>
-            <CardHeader>
-              <CardTitle>Items Management</CardTitle>
-              <CardDescription>
-                Add, edit, and manage your inventory items
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className='text-sm text-muted-foreground mb-4'>
-                Manage your product catalog with ease. Add new items, update
-                prices, and organize by categories.
-              </p>
-              <Button className='w-full'>Manage Items</Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Sales Dashboard</CardTitle>
-              <CardDescription>
-                Track your sales and revenue in real-time
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className='text-sm text-muted-foreground mb-4'>
-                Monitor your business performance with detailed analytics and
-                sales reports.
-              </p>
-              <Button variant='outline' className='w-full'>
-                View Dashboard
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>WhatsApp Integration</CardTitle>
-              <CardDescription>
-                Process orders directly from WhatsApp
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className='text-sm text-muted-foreground mb-4'>
-                Seamlessly handle customer orders and payments through WhatsApp
-                messaging.
-              </p>
-              <Button variant='secondary' className='w-full'>
-                Setup WhatsApp
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Quick Actions Section */}
-        <Card className='mt-8'>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common tasks for your POS system</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className='flex flex-wrap gap-4'>
-              <Button>Add New Item</Button>
-              <Button variant='outline'>Process Order</Button>
-              <Button variant='secondary'>View Reports</Button>
-              <Button variant='ghost'>Settings</Button>
+    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
+      <Card className='w-full max-w-md'>
+        <CardHeader className='text-center'>
+          <div className='flex justify-center items-center gap-2 mb-4'>
+            <div className='bg-green-500 p-2 rounded-lg'>
+              <MessageCircle className='h-6 w-6 text-white' />
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className='bg-blue-500 p-2 rounded-lg'>
+              <ShoppingCart className='h-6 w-6 text-white' />
+            </div>
+          </div>
+          <CardTitle className='text-2xl font-bold'>WhatsApp POS</CardTitle>
+          <p className='text-gray-600 mt-2'>
+            Manage your business with WhatsApp integration
+          </p>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <Link href='/login' className='block'>
+            <Button className='w-full bg-green-500 hover:bg-green-600'>
+              Sign In
+            </Button>
+          </Link>
+          <Link href='/signup' className='block'>
+            <Button variant='outline' className='w-full'>
+              Create Account
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
     </div>
   );
 }
