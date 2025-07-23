@@ -22,6 +22,7 @@ const eslintConfig = [
       'valid-jsdoc': 'off',
       'no-unused-vars': 'off', // TypeScript handles this
       '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'error',
       'max-len': 'off', // Prettier handles line length
       'object-curly-spacing': 'off', // Prettier handles spacing
       indent: 'off', // Prettier handles indentation
