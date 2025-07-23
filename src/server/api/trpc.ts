@@ -13,7 +13,15 @@ import { prisma } from '@/lib/prisma';
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
-export const createTRPCContext = async (opts: FetchCreateContextFnOptions) => {
+export type TRPCContext = {
+  req: FetchCreateContextFnOptions['req'];
+  prisma: typeof prisma;
+  // session?: any;
+};
+
+export const createTRPCContext = async (
+  opts: FetchCreateContextFnOptions,
+): Promise<TRPCContext> => {
   const { req } = opts;
 
   // Get the session from the server using the getServerSession wrapper function

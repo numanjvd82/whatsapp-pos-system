@@ -1,6 +1,15 @@
 import { TRPCError } from '@trpc/server';
 import { ZodError } from 'zod';
 
+export class NotFoundError extends TRPCError {
+  constructor(message: string) {
+    super({
+      code: 'NOT_FOUND',
+      message,
+    });
+  }
+}
+
 export class AuthError extends TRPCError {
   constructor(message: string) {
     super({

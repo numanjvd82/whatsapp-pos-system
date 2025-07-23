@@ -1,12 +1,24 @@
 import z from 'zod';
 import { signUpSchema } from '../../../../schemas/auth.schema';
-import { prisma } from '@/lib/prisma';
 import { ConflictError } from '@/server/api/errors';
 import { hash } from 'bcrypt';
+import { PrismaClient } from '@prisma/client';
 
 export type Input = z.infer<typeof signUpSchema>;
 
-export const signUp = async (input: Input) => {
+type SignUpResponse = {
+  message: string;
+  user: {
+    id: string;
+    email: string;
+    name: string | null;
+  };
+};
+
+export const signUp = async (
+  input: Input,
+  prisma: PrismaClient,
+): Promise<SignUpResponse> => {
   const validatedInput = signUpSchema.parse(input);
 
   const userExists = await prisma.user.findUnique({

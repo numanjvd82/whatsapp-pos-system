@@ -37,3 +37,8 @@ export const signUpSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     error: 'Passwords do not match',
   });
+
+export const loginSchema = signUpSchema.pick({
+  email: true,
+  password: true,
+});
