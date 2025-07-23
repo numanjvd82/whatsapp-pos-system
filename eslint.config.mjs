@@ -22,7 +22,14 @@ const eslintConfig = [
       'valid-jsdoc': 'off',
       'no-unused-vars': 'off', // TypeScript handles this
       '@typescript-eslint/no-unused-vars': 'error',
-      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
+        },
+      ],
       'max-len': 'off', // Prettier handles line length
       'object-curly-spacing': 'off', // Prettier handles spacing
       indent: 'off', // Prettier handles indentation
@@ -43,6 +50,21 @@ const eslintConfig = [
         },
       ],
     },
+    ignores: [
+      // Ignore build output directories
+      'node_modules',
+      'dist',
+      'build',
+      'out',
+      // Ignore specific files or directories
+      'coverage',
+      '.next',
+      'public/static',
+      'public/assets',
+      // Ignore configuration files
+      '*.config.js',
+      '*.config.ts',
+    ],
   },
 ];
 

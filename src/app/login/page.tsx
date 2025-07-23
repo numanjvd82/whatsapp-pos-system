@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,7 +27,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
+export default function LoginPage(): React.ReactElement {
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -38,7 +38,7 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData): Promise<void> => {
     console.log('Login data:', data);
     // TODO: Implement login logic
     toast.success('Login successful!'); // Placeholder for now

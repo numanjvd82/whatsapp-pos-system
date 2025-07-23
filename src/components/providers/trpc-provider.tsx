@@ -6,7 +6,11 @@ import { useState } from 'react';
 
 import { api, trpcClient } from '@/utils/api';
 
-export function TRPCProvider({ children }: { children: React.ReactNode }) {
+export function TRPCProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement {
   const [queryClient] = useState(() => new QueryClient());
 
   return (

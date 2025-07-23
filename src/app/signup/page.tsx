@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -30,7 +30,7 @@ import { toast } from 'sonner';
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
-export default function SignUpPage() {
+export default function SignUpPage(): React.ReactElement {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
@@ -57,7 +57,7 @@ export default function SignUpPage() {
     },
   });
 
-  const onSubmit = async (data: SignUpFormData) => {
+  const onSubmit = async (data: SignUpFormData): Promise<void> => {
     try {
       await createUser(data);
     } catch (error) {

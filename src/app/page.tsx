@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { MessageCircle, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
 
-export default function HomePage() {
+export default function HomePage(): React.ReactElement {
   return (
     <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
       <Card className='w-full max-w-md'>

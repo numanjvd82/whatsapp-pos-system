@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Metadata } from 'next';
 import { Open_Sans, Roboto } from 'next/font/google';
 import './globals.css';
@@ -23,7 +24,7 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>): React.ReactElement {
   return (
     <html lang='en'>
       <body className={`${roboto.variable} ${openSans.variable} antialiased`}>

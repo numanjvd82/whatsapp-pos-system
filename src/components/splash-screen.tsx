@@ -1,6 +1,7 @@
+import React from 'react';
 import { MessageCircle, ShoppingCart, Loader2 } from 'lucide-react';
 
-export default function SplashScreen() {
+export default function SplashScreen(): React.ReactElement {
   return (
     <div className='min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center'>
       <div className='text-center space-y-8'>
