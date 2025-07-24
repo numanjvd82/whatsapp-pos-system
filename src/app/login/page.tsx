@@ -18,30 +18,42 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
-// Login schema
-const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
+import { loginSchema } from '@/schemas/auth.schema';
+import { api } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage(): React.ReactElement {
   const [showPassword, setShowPassword] = useState(false);
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
+  const { isPending, mutateAsync: loginUser } = api.auth.login.useMutation({
+    onSuccess: (data) => {
+      console.log('Sign up successful:', data);
+      toast.success('Account created successfully!');
+      reset();
+      router.push('/dashboard');
+    },
+  });
+
   const onSubmit = async (data: LoginFormData): Promise<void> => {
-    console.log('Login data:', data);
-    // TODO: Implement login logic
-    toast.success('Login successful!'); // Placeholder for now
+    try {
+      await loginUser(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Login error:', error);
+        toast.error(error.message || 'An unexpected error occurred');
+      }
+    }
   };
 
   return (
@@ -107,6 +119,7 @@ export default function LoginPage(): React.ReactElement {
             <Button
               type='submit'
               className='w-full bg-green-500 hover:bg-green-600'
+              disabled={isPending}
             >
               Sign In
             </Button>

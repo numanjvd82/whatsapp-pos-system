@@ -51,18 +51,16 @@ export default function SignUpPage(): React.ReactElement {
       reset();
       router.push('/login');
     },
-    onError: (error) => {
-      console.error('Sign up error:', error.message);
-      toast.error(error.message || 'Failed to create account');
-    },
   });
 
   const onSubmit = async (data: SignUpFormData): Promise<void> => {
     try {
       await createUser(data);
     } catch (error) {
-      // Error handling is done in the onError callback
-      console.error('Submit error:', error);
+      if (error instanceof Error) {
+        console.error('Sign up error:', error.message);
+        toast.error(error.message || 'Failed to create account');
+      }
     }
   };
 

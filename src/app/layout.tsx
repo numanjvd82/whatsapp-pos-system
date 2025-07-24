@@ -4,6 +4,7 @@ import { Open_Sans, Roboto } from 'next/font/google';
 import './globals.css';
 import { TRPCProvider } from '@/components/providers/trpc-provider';
 import { Toaster } from '@/components/ui/sonner';
+import AuthProvider from '@/components/providers/AuthProvider';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${roboto.variable} ${openSans.variable} antialiased`}>
-        <TRPCProvider>{children}</TRPCProvider>
+        <TRPCProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </TRPCProvider>
         <Toaster />
       </body>
     </html>

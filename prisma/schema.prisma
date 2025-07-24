@@ -10,6 +10,10 @@ datasource db {
   url      = env("SUPABASE_CONNECTION_STRING")
 }
 
+enum UserRole {
+  ADMIN
+  SUPERADMIN
+}
 
 model User {
    id           String   @id @default(cuid())
@@ -18,8 +22,7 @@ model User {
   passwordHash  String
   phone         String?   // optional contact number
   businessName  String?   // brand shown on invoices
-  refreshToken  String? 
-  role          String   @default("user")
+  role          UserRole @default(ADMIN)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

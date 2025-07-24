@@ -1,9 +1,11 @@
 import { initTRPC } from '@trpc/server';
 import { type FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import superjson from 'superjson';
-import { ZodError } from 'zod';
+import z, { ZodError } from 'zod';
 
 import { prisma } from '@/lib/prisma';
+import { SerializeOptions } from 'cookie';
+import { clearCookie, getCookie, setCookie } from '@/lib/cookie';
 
 /**
  * 1. CONTEXT
@@ -16,13 +18,20 @@ import { prisma } from '@/lib/prisma';
 export type TRPCContext = {
   req: FetchCreateContextFnOptions['req'];
   prisma: typeof prisma;
+  getCookie: (name: string) => string | undefined;
+  setCookie: (
+    name: string,
+    value: string,
+    options?: Record<string, SerializeOptions>,
+  ) => void;
+  clearCookie: (name: string) => void;
   // session?: any;
 };
 
 export const createTRPCContext = async (
   opts: FetchCreateContextFnOptions,
 ): Promise<TRPCContext> => {
-  const { req } = opts;
+  const { req, resHeaders } = opts;
 
   // Get the session from the server using the getServerSession wrapper function
   // const session = await getServerSession(req, res, authOptions);
@@ -30,6 +39,11 @@ export const createTRPCContext = async (
   return {
     req,
     prisma,
+    getCookie: (name: string) => getCookie(req, name),
+    setCookie: (name: string, value: string, options?: SerializeOptions) =>
+      setCookie(resHeaders, name, value, options),
+    clearCookie: (name: string) => clearCookie(name, opts.resHeaders),
+    // session: session ? { ...session, user:
     // session,
   };
 };
@@ -49,7 +63,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
       data: {
         ...shape.data,
         zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
+          error.cause instanceof ZodError ? z.treeifyError(error.cause) : null,
       },
     };
   },

@@ -1,0 +1,62 @@
+import { PrismaClient } from '@prisma/client';
+import { LoginResponse } from '../../types/response';
+import { Secret, sign, SignOptions, verify } from 'jsonwebtoken';
+import { AuthError, handleError } from '../../errors';
+import dayjs from 'dayjs';
+
+type RefreshTokenResponse = Omit<LoginResponse, 'data'> & {
+  data: {
+    accessToken: {
+      token: string;
+      expiresIn: string;
+    };
+  };
+};
+
+export async function refresh(
+  input: { refreshToken: string },
+  prisma: PrismaClient,
+): Promise<RefreshTokenResponse | undefined> {
+  try {
+    const { refreshToken } = input;
+
+    const decoded = verify(
+      refreshToken,
+      process.env.JWT_REFRESH_TOKEN_SECRET as Secret,
+    ) as { userId: string };
+
+    // Check refresh token validity in DB
+    const dbRefreshToken = await prisma.refreshToken.findUnique({
+      where: { token: refreshToken },
+    });
+
+    if (!dbRefreshToken || dbRefreshToken.expiresAt < new Date()) {
+      await prisma.refreshToken.deleteMany({
+        where: { token: refreshToken },
+      });
+
+      throw new AuthError('Refresh token is invalid or expired');
+    }
+
+    // Generate new access token
+    const newAccessToken = sign(
+      { userId: decoded.userId },
+      process.env.JWT_ACCESS_TOKEN_SECRET as Secret,
+      {
+        expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN ?? '1h',
+      } as SignOptions,
+    );
+
+    return {
+      success: true,
+      data: {
+        accessToken: {
+          token: newAccessToken,
+          expiresIn: dayjs().add(5, 'minute').toISOString(),
+        },
+      },
+    };
+  } catch (err) {
+    handleError(err);
+  }
+}
