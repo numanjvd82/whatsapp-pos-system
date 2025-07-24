@@ -1,5 +1,5 @@
 'use client';
-import { useAuthStore } from '@/app/stores/auth';
+import { useAuthStore } from '@/app/stores/store.auth';
 import { api } from '@/utils/api';
 import dayjs from 'dayjs';
 import { jwtDecode } from 'jwt-decode';

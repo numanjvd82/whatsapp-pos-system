@@ -16,7 +16,6 @@ export type SignUpResponse = ApiResponse<{
 export type LoginResponse = ApiResponse<{
   accessToken: {
     token: string;
-    expiresIn: string; // ISO string format
   };
   refreshToken: string;
 }>;

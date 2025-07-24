@@ -4,7 +4,7 @@ import z from 'zod';
 import { handleError, NotFoundError } from '../../errors';
 import { compare } from 'bcrypt';
 import { Secret, sign, SignOptions } from 'jsonwebtoken';
-import { LoginResponse } from '../../types/response';
+import { LoginResponse } from '../../types/types.response';
 import dayjs from 'dayjs';
 
 type Input = z.infer<typeof loginSchema>;
@@ -56,7 +56,6 @@ export const login = async (
       data: {
         token: refreshToken,
         userId: user.id,
-        // expiresAt: dayjs().add(7, 'day').toISOString(), production should handle this
         expiresAt: dayjs().add(10, 'minute').toISOString(), // for development purposes
       },
     });
@@ -70,7 +69,6 @@ export const login = async (
       data: {
         accessToken: {
           token: accessToken,
-          expiresIn: dayjs().add(5, 'minute').toISOString(),
         },
         refreshToken,
       },

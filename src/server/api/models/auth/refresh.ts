@@ -1,14 +1,12 @@
 import { PrismaClient } from '@prisma/client';
-import { LoginResponse } from '../../types/response';
 import { Secret, sign, SignOptions, verify } from 'jsonwebtoken';
 import { AuthError, handleError } from '../../errors';
-import dayjs from 'dayjs';
+import { LoginResponse } from '../../types/types.response';
 
 type RefreshTokenResponse = Omit<LoginResponse, 'data'> & {
   data: {
     accessToken: {
       token: string;
-      expiresIn: string;
     };
   };
 };
@@ -31,6 +29,7 @@ export async function refresh(
     });
 
     if (!dbRefreshToken || dbRefreshToken.expiresAt < new Date()) {
+      console.log('Refresh token not found or expired');
       await prisma.refreshToken.deleteMany({
         where: { token: refreshToken },
       });
@@ -52,7 +51,6 @@ export async function refresh(
       data: {
         accessToken: {
           token: newAccessToken,
-          expiresIn: dayjs().add(5, 'minute').toISOString(),
         },
       },
     };

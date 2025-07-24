@@ -6,6 +6,8 @@ import z, { ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { SerializeOptions } from 'cookie';
 import { clearCookie, getCookie, setCookie } from '@/lib/cookie';
+import { getServerSession, PartialUser } from '@/utils';
+import { AuthError } from './errors';
 
 /**
  * 1. CONTEXT
@@ -25,7 +27,9 @@ export type TRPCContext = {
     options?: Record<string, SerializeOptions>,
   ) => void;
   clearCookie: (name: string) => void;
-  // session?: any;
+  session: {
+    user: PartialUser | null;
+  };
 };
 
 export const createTRPCContext = async (
@@ -34,7 +38,9 @@ export const createTRPCContext = async (
   const { req, resHeaders } = opts;
 
   // Get the session from the server using the getServerSession wrapper function
-  // const session = await getServerSession(req, res, authOptions);
+  const user = await getServerSession(req, prisma);
+
+  const session = { user: user ?? null };
 
   return {
     req,
@@ -43,8 +49,7 @@ export const createTRPCContext = async (
     setCookie: (name: string, value: string, options?: SerializeOptions) =>
       setCookie(resHeaders, name, value, options),
     clearCookie: (name: string) => clearCookie(name, opts.resHeaders),
-    // session: session ? { ...session, user:
-    // session,
+    session,
   };
 };
 
@@ -100,14 +105,14 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ next }) => {
-  // if (!ctx.session || !ctx.session.user) {
-  //   throw new TRPCError({ code: "UNAUTHORIZED" });
-  // }
+export const protectedProcedure = t.procedure.use(({ next, ctx }) => {
+  if (!ctx.session.user) {
+    throw new AuthError('');
+  }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      // session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session, user: ctx.session.user },
     },
   });
 });

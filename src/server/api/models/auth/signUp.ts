@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcrypt';
 import z from 'zod';
 import { signUpSchema } from '../../../../schemas/auth.schema';
-import { SignUpResponse } from '../../types/response';
+import { SignUpResponse } from '../../types/types.response';
 
 export type Input = z.infer<typeof signUpSchema>;
 
