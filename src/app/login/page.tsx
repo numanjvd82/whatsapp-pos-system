@@ -37,9 +37,8 @@ export default function LoginPage(): React.ReactElement {
   });
 
   const { isPending, mutateAsync: loginUser } = api.auth.login.useMutation({
-    onSuccess: (data) => {
-      console.log('Sign up successful:', data);
-      toast.success('Account created successfully!');
+    onSuccess: () => {
+      toast.success('Login Successful!');
       reset();
       router.push('/dashboard');
     },

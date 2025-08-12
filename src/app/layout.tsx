@@ -5,6 +5,7 @@ import './globals.css';
 import { TRPCProvider } from '@/components/providers/trpc-provider';
 import { Toaster } from '@/components/ui/sonner';
 import AuthProvider from '@/components/providers/AuthProvider';
+import Navbar from '@/components/navbar';
 
 const roboto = Roboto({
   variable: '--font-roboto',
@@ -30,7 +31,10 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${roboto.variable} ${openSans.variable} antialiased`}>
         <TRPCProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
         </TRPCProvider>
         <Toaster />
       </body>

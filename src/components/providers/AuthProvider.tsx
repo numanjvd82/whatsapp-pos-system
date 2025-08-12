@@ -3,7 +3,7 @@ import { useAuthStore } from '@/app/stores/store.auth';
 import { api } from '@/utils/api';
 import dayjs from 'dayjs';
 import { jwtDecode } from 'jwt-decode';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 export default function AuthProvider({
@@ -13,6 +13,7 @@ export default function AuthProvider({
 }): React.ReactElement {
   const { accessToken, setAccessToken, clearAccessToken } = useAuthStore();
   const router = useRouter();
+  const pathname = usePathname();
 
   const { data, error } = api.auth.refresh.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -21,7 +22,14 @@ export default function AuthProvider({
     retry: false,
   });
 
-  console.log('AuthProvider - Data:', data);
+  useEffect(() => {
+    // Public paths where unauthenticated users should be
+    const publicPaths = ['/login', '/signup'];
+
+    if (accessToken && publicPaths.includes(pathname || '')) {
+      router.push('/dashboard');
+    }
+  }, [accessToken, router, pathname]);
 
   useEffect(() => {
     const now = dayjs().unix();
@@ -35,7 +43,6 @@ export default function AuthProvider({
     if (isTokenExpired || error) {
       clearAccessToken();
       router.push('/login');
-      return;
     }
 
     // If API returned a new access token, set it

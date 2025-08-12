@@ -18,11 +18,6 @@ export async function refresh(
   try {
     const { refreshToken } = input;
 
-    const decoded = verify(
-      refreshToken,
-      process.env.JWT_REFRESH_TOKEN_SECRET as Secret,
-    ) as { userId: string };
-
     // Check refresh token validity in DB
     const dbRefreshToken = await prisma.refreshToken.findUnique({
       where: { token: refreshToken },
@@ -36,6 +31,11 @@ export async function refresh(
 
       throw new AuthError('Refresh token is invalid or expired');
     }
+
+    const decoded = verify(
+      refreshToken,
+      process.env.JWT_REFRESH_TOKEN_SECRET as Secret,
+    ) as { userId: string };
 
     // Generate new access token
     const newAccessToken = sign(

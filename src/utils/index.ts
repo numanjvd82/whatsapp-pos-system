@@ -1,6 +1,7 @@
 import { handleError } from '@/server/api/errors';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { JwtPayload, verify } from 'jsonwebtoken';
+import { parse } from 'cookie';
+import { JwtPayload, TokenExpiredError, verify } from 'jsonwebtoken';
 
 export type PartialUser = Prisma.UserGetPayload<{
   select: {
@@ -19,13 +20,10 @@ export async function getServerSession(
   req: Request,
   prisma: PrismaClient,
 ): Promise<PartialUser | null> {
-  const authHeader = req.headers.get('authorization');
+  const cookieHeader = req.headers.get('cookie');
+  const cookies = cookieHeader ? parse(cookieHeader) : {};
+  const token = cookies['refreshToken'];
 
-  if (!authHeader) {
-    return null;
-  }
-
-  const token = authHeader.split(' ')[1];
   if (!token) {
     return null;
   }
@@ -35,21 +33,20 @@ export async function getServerSession(
       token,
       process.env.JWT_REFRESH_TOKEN_SECRET!,
     ) as JwtPayload as {
-      userId: string;
+      id: string;
     };
+
+    if (!decoded || !decoded.id) {
+      return null;
+    }
 
     // fetch user from database
     const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        businessName: true,
-        phone: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
+      where: {
+        id: decoded.id,
+      },
+      omit: {
+        passwordHash: true,
       },
     });
 
@@ -58,7 +55,11 @@ export async function getServerSession(
     }
 
     return user as PartialUser;
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof TokenExpiredError) {
+      console.warn('Refresh token expired, clearing cookie.');
+      return null;
+    }
     handleError(error);
     return null;
   }

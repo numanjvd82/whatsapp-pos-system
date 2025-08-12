@@ -46,6 +46,24 @@ export class InternalError extends TRPCError {
   }
 }
 
+export class TokenExpiredError extends TRPCError {
+  constructor(message: string = 'Token has expired') {
+    super({
+      code: 'UNAUTHORIZED',
+      message,
+    });
+  }
+}
+
+export class ForbiddenError extends TRPCError {
+  constructor(message: string = 'Forbidden') {
+    super({
+      code: 'FORBIDDEN',
+      message,
+    });
+  }
+}
+
 // Error handler utility
 export const handleError = (error: unknown): never => {
   if (error instanceof TRPCError) {

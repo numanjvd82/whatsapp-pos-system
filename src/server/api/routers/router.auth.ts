@@ -48,4 +48,15 @@ export const authRouter = createTRPCRouter({
       handleError(error);
     }
   }),
+  logout: publicProcedure.mutation(async ({ ctx: { prisma, clearCookie } }) => {
+    try {
+      // Clear the refresh token from the database
+      await prisma.refreshToken.deleteMany({});
+      // Clear the cookie
+      clearCookie('refreshToken');
+      return { success: true };
+    } catch (error) {
+      handleError(error);
+    }
+  }),
 });
